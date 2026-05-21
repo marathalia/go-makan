@@ -690,7 +690,6 @@ function LocationControl({
   loading,
   error,
   source,
-  placesStatus,
 }) {
   return (
     <div className="relative rounded-[1.75rem] border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
@@ -784,9 +783,6 @@ function LocationControl({
         )}
       </div>
 
-      <div className="mt-3 min-h-10">
-        {placesStatus && <p className="line-clamp-2 text-xs leading-5 text-white/45">{placesStatus}</p>}
-      </div>
     </div>
   );
 }
@@ -810,7 +806,6 @@ function HomeScreen({
   onStart,
   onHungryNow,
   onSurprise,
-  placesStatus,
 }) {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="flex-1">
@@ -849,7 +844,6 @@ function HomeScreen({
           loading={locationSearchLoading}
           error={locationSearchError}
           source={locationSearchSource}
-          placesStatus={placesStatus}
         />
 
         <button
@@ -1441,7 +1435,6 @@ export default function LunchDeciderApp() {
   const [history, setHistory] = useState(() => loadLocalArray(STORAGE_KEYS.history));
   const [customQuickLocations, setCustomQuickLocations] = useState(() => loadLocalArray(STORAGE_KEYS.quickLocations));
   const [remotePlaces, setRemotePlaces] = useState([]);
-  const [placesStatus, setPlacesStatus] = useState("Using demo places until a Google Maps API key is configured.");
   const [locationQuery, setLocationQuery] = useState("");
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [locationSearchLoading, setLocationSearchLoading] = useState(false);
@@ -1461,7 +1454,6 @@ export default function LunchDeciderApp() {
     const controller = new AbortController();
 
     async function loadPlaces() {
-      setPlacesStatus("Finding real restaurants near this area...");
       try {
         const params = new URLSearchParams({
           lat: String(location.lat),
@@ -1479,15 +1471,9 @@ export default function LunchDeciderApp() {
         );
         const places = normalizeApiPlaces(payload.places || []);
         setRemotePlaces(places);
-        setPlacesStatus(
-          payload.source === "google" && places.length
-            ? `Using ${places.length} live Google Places results near ${location.name}.`
-            : "Using demo places until a Google Maps API key is configured."
-        );
       } catch (error) {
         if (error.name === "AbortError") return;
         setRemotePlaces([]);
-        setPlacesStatus(`Using demo places because live places failed: ${error.message}`);
       }
     }
 
@@ -1797,7 +1783,6 @@ export default function LunchDeciderApp() {
         onStart={() => setScreen("preferences")}
         onHungryNow={handleHungryNow}
         onSurprise={handleSurprise}
-        placesStatus={placesStatus}
       />
     );
   };

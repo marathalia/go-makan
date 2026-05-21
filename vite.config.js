@@ -2,9 +2,9 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import {
+  fetchPlacePhoto,
   findPlaces,
   getLocationDetail,
-  getPlacePhotoRedirect,
   suggestLocations,
 } from "./server/places-service.js";
 
@@ -45,22 +45,23 @@ function installPlacesApi(server, apiKey) {
     }
   });
 
-  server.middlewares.use("/api/place-photo", (req, res) => {
-    const requestUrl = new URL(req.url, "http://localhost");
-    const result = getPlacePhotoRedirect(
-      apiKey,
-      requestUrl.searchParams.get("reference"),
-      requestUrl.searchParams.get("maxWidth")
-    );
+  server.middlewares.use("/api/place-photo", async (req, res) => {
+    try {
+      const requestUrl = new URL(req.url, "http://localhost");
+      const result = await fetchPlacePhoto(
+        apiKey,
+        requestUrl.searchParams.get("reference"),
+        requestUrl.searchParams.get("maxWidth")
+      );
 
-    res.statusCode = result.status;
-    if (result.location) {
-      res.setHeader("Location", result.location);
-      res.end();
-      return;
+      res.statusCode = result.status;
+      if (result.contentType) res.setHeader("Content-Type", result.contentType);
+      if (result.cacheControl) res.setHeader("Cache-Control", result.cacheControl);
+      res.end(result.body || "");
+    } catch (error) {
+      res.statusCode = 500;
+      res.end(error.message);
     }
-
-    res.end(result.body || "");
   });
 }
 

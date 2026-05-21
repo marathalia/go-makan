@@ -302,7 +302,7 @@ export async function findPlaces(apiKey, params) {
   return { status: 200, body: { source: "google", places, keywords } };
 }
 
-export function getPlacePhotoRedirect(apiKey, reference, maxWidth = "900") {
+export async function fetchPlacePhoto(apiKey, reference, maxWidth = "900") {
   if (!apiKey) {
     return { status: 404 };
   }
@@ -316,5 +316,13 @@ export function getPlacePhotoRedirect(apiKey, reference, maxWidth = "900") {
   url.searchParams.set("maxwidth", maxWidth);
   url.searchParams.set("key", apiKey);
 
-  return { status: 302, location: url.toString() };
+  const response = await fetch(url);
+  const body = new Uint8Array(await response.arrayBuffer());
+
+  return {
+    status: response.status,
+    body,
+    contentType: response.headers.get("content-type") || "image/jpeg",
+    cacheControl: response.headers.get("cache-control") || "public, max-age=3600",
+  };
 }

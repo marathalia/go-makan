@@ -27,9 +27,9 @@ import {
 } from "lucide-react";
 
 const STORAGE_KEYS = {
-  favourites: "lunch-decider:favourites",
-  history: "lunch-decider:history",
-  quickLocations: "lunch-decider:quick-locations",
+  favourites: "go-makan:favourites",
+  history: "go-makan:history",
+  quickLocations: "go-makan:quick-locations",
 };
 
 const locationPresets = [
@@ -809,14 +809,14 @@ function HomeScreen({
 }) {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="flex-1">
-      <TopBar title="Lunch Decider" subtitle="Pick lunch without overthinking" />
+      <TopBar title="GoMakan" subtitle="Pick lunch without overthinking" />
 
       <section className="mb-5 rounded-[2.5rem] bg-zinc-950 p-6 text-white shadow-[0_30px_90px_rgba(0,0,0,0.26)]">
         <div className="mb-6 flex items-start justify-between gap-3">
           <div>
             <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80">
               <Sparkles size={14} />
-              Lunch helper
+              GoMakan
             </div>
             <h2 className="max-w-xs text-4xl font-black leading-[0.95] tracking-tight">What kind of lunch works today?</h2>
             <p className="mt-3 max-w-xs text-sm font-medium leading-6 text-white/55">
@@ -1422,7 +1422,7 @@ function Toast({ message, onClose }) {
   );
 }
 
-export default function LunchDeciderApp() {
+export default function GoMakanApp() {
   const [activeTab, setActiveTab] = useState("home");
   const [screen, setScreen] = useState("home");
   const [preferences, setPreferences] = useState(defaultPreferences);

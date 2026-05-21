@@ -367,7 +367,7 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
       {
-        name: "lunch-decider-places-api",
+        name: "go-makan-places-api",
         configureServer(server) {
           installPlacesApi(server, apiKey);
         },
